@@ -26,44 +26,24 @@
 
 	const retailers = [
 		{
-			name: 'test retailer',
-			id: '1',
-			city: 'Chicago',
-			state: 'IL',
-			zip: '90210',
-			address1: '123 test dr.'
+			name: 'test retailer 1',
+			id: '1'
 		},
 		{
-			name: 'test retailer',
-			id: '1',
-			city: 'Chicago',
-			state: 'IL',
-			zip: '90210',
-			address1: '123 test dr.'
+			name: 'test retailer 2',
+			id: '2'
 		},
 		{
-			name: 'test retailer',
-			id: '1',
-			city: 'Chicago',
-			state: 'IL',
-			zip: '90210',
-			address1: '123 test dr.'
+			name: 'test retailer 3',
+			id: '3'
 		},
 		{
-			name: 'test retailer',
-			id: '1',
-			city: 'Chicago',
-			state: 'IL',
-			zip: '90210',
-			address1: '123 test dr.'
+			name: 'test retailer 4',
+			id: '4'
 		},
 		{
-			name: 'test retailer',
-			id: '1',
-			city: 'Chicago',
-			state: 'IL',
-			zip: '90210',
-			address1: '123 test dr.'
+			name: 'test retailer 5',
+			id: '5'
 		}
 	]
 
@@ -100,7 +80,7 @@
 						</DropdownItem>
 					{/if}
 					<Flex column>
-						{#each retailers as { id, name, address1, city, state, zip }}
+						{#each retailers as { id, name }}
 							<DropdownItem asChild let:builder>
 								<div use:builder.action>
 									<Radio 
@@ -111,10 +91,6 @@
 										checked={selected === name}
 										class="text-black"
 									/>
-										<Flex as="span" column gap="0">
-											<span>{address1}</span>
-											<span>{city}, {state} {zip}</span>
-										</Flex>
 								</div>
 							</DropdownItem>
 						{/each}

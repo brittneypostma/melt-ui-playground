@@ -80,7 +80,7 @@ type $$Props = ButtonAttrs | AnchorProps;
 		{
 			variants: {
 				primary: {
-					true: 'primary text-white bg-brand hover:bg-brand-hover active:bg-brand-active dark:bg-brand dark:hover:bg-brand-hover dark:active:bg-brand-active dark:text-white'
+					true: 'primary text-white bg-brand hover:bg-brand-hover active:bg-brand-active dark:bg-brand dark:hover:bg-brand-hover dark:active:bg-brand-active'
 				},
 				secondary: {
 					true: 'secondary text-brand bg-accent hover:bg-accent-hover active:bg-accent-active dark:bg-accent dark:hover:bg-accent-hover dark:active:bg-accent-active dark:text-brand'
@@ -116,7 +116,8 @@ type $$Props = ButtonAttrs | AnchorProps;
 		stretch  && 'w-full',
 		(stretch && 'justify-between'),
 		!stretch &&
-			'justify-center'
+			'justify-center',
+		primary && 'text-white font-semibold'
 	)}
 	on:click
 	on:change
