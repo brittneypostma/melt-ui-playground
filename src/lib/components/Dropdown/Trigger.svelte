@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Button from '$lib/UI/Button.svelte';
+	import Button from '$lib/ui/Button.svelte';
 	import { AlignJustify } from 'lucide-svelte';
 	import { dropdownCtx } from './Root.svelte';
 
