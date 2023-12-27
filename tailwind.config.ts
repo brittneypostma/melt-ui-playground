@@ -1,27 +1,12 @@
 import type { Config } from 'tailwindcss';
-import plugin from 'tailwindcss/plugin';
-import typography from '@tailwindcss/typography';
+// import { craftPlugin } from '@getprovi/craft/dist/tailwind/craft-plugin.js';
 import { craftPreset } from '@getprovi/craft/dist/tailwind/craft-preset.js';
+
 export default {
-	content: ['./src/**/*.{html,js,svelte,ts}'],
-
-
-	plugins: [
-		typography,
-		plugin(function ({ addVariant, matchUtilities, theme }) {
-			addVariant('hocus', ['&:hover', '&:focus']);
-			// Square utility
-			matchUtilities(
-				{
-					square: (value) => ({
-						width: value,
-						height: value
-					})
-				},
-				{ values: theme('spacing') }
-			);
-		})
+	content: [
+		'./src/**/*.{html,js,svelte,ts}',
+		'./node_modules/@getprovi/craft/**/*.{html,js,svelte,ts}'
 	],
-		presets: [craftPreset]
-
+	// plugins: [craftPlugin]
+	presets: [craftPreset]
 } satisfies Config;
