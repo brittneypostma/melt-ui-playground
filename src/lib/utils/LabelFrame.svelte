@@ -3,8 +3,8 @@
 	import type { HTMLLabelAttributes } from 'svelte/elements';
 	import { Flex } from '@getprovi/craft';
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface $$Props extends HTMLLabelAttributes {
-		class?: string;
 		disabled?: boolean;
 		hidden?: boolean;
 		inputId: string;
@@ -12,18 +12,17 @@
 		size?: 'sm' | 'default';
 	}
 
-	let className: string | undefined | null = undefined;
-	export { className as class };
 	export let disabled: boolean = false;
 	export let hidden: boolean = false;
 	export let inputId: string;
 	export let label: string | undefined = undefined;
 	export let size: 'sm' | 'default' = 'default';
+	let className: string | undefined | null = undefined;
+	export { className as class };
 
-	let textColor = disabled ? 'text-disabled' : 'text-brand';
-	let textSize = size === 'sm' ? 'text-sm' : 'text-base';
-
-	const labelClass = cn(textColor, textSize, className, 'craft focus-visible:outline-none');
+	$: textColor = disabled ? 'text-disabled' : 'text-brand';
+	$: textSize = size === 'sm' ? 'text-sm' : 'text-base';
+	$: labelClass = cn(textColor, textSize, className, 'craft focus-visible:outline-none');
 </script>
 
 <label for={inputId} {...$$restProps} class={labelClass} class:sr-only={hidden}>
