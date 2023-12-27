@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { cn } from '$lib/utils/cn.js';
 	import type { HTMLLabelAttributes } from 'svelte/elements';
-    import {Flex} from '@getprovi/craft'
+	import { Flex } from '@getprovi/craft';
 
 	interface $$Props extends HTMLLabelAttributes {
 		class?: string;

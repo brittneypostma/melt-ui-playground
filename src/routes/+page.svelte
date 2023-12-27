@@ -1,9 +1,9 @@
 <script lang="ts">
-    import Dropdown from '../lib/ui/Dropdown.svelte';
-    import Button from '../lib/ui/Button.svelte'
-    import {Flex, MenuLink, Text, ArrowTrayDown, ListSolid, TrashcanOutline } from '@getprovi/craft'
+	import Dropdown from '../lib/ui/Dropdown.svelte';
+	import Button from '../lib/ui/Button.svelte';
+	import { Flex, MenuLink, Text, ArrowTrayDown, ListSolid, TrashcanOutline } from '@getprovi/craft';
 	import DropdownItem from '$lib/ui/DropdownItem.svelte';
-	import Radio from '$lib/ui/Radio.svelte'
+	import Radio from '$lib/ui/Radio.svelte';
 
 	let menuItems = [
 		{
@@ -45,7 +45,7 @@
 			name: 'test retailer 5',
 			id: '5'
 		}
-	]
+	];
 
 	let selected = retailers[0].name;
 	$: value = selected;
@@ -83,7 +83,7 @@
 						{#each retailers as { id, name }}
 							<DropdownItem asChild let:builder>
 								<div use:builder.action>
-									<Radio 
+									<Radio
 										bind:group={selected}
 										id={id.toString()}
 										value={name}

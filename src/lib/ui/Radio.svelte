@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { cn } from '$lib/utils/cn.js';
 	import { cva } from 'class-variance-authority';
-	import {Flex, Text} from '@getprovi/craft'
-	import LabelFrame from '$lib/utils/LabelFrame.svelte'
+	import { Flex, Text } from '@getprovi/craft';
+	import LabelFrame from '$lib/utils/LabelFrame.svelte';
 
 	interface $$Props {
 		class?: string;

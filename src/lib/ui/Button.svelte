@@ -32,11 +32,9 @@
 	import { cn } from '$lib/utils/cn.js';
 	import { cva } from 'class-variance-authority';
 	import type { Action } from 'svelte/action';
-	import Frame from './Frame.svelte'
-	
-	
+	import Frame from './Frame.svelte';
 
-type $$Props = ButtonAttrs | AnchorProps;
+	type $$Props = ButtonAttrs | AnchorProps;
 
 	let className: string | undefined | null = undefined;
 	export { className as class };
@@ -66,16 +64,16 @@ type $$Props = ButtonAttrs | AnchorProps;
 		tertiary = false;
 	}
 
-	let sizeClass = ''
+	let sizeClass = '';
 	$: if (size === 'sm') {
-			sizeClass = 'px-16 py-6 text-sm-semibold';
-		} else if (size === 'default') {
-			sizeClass = 'px-24 py-8 text-semibold';
-		} else {
-			sizeClass = 'px-24 py-12 text-semibold';
-		}
+		sizeClass = 'px-16 py-6 text-sm-semibold';
+	} else if (size === 'default') {
+		sizeClass = 'px-24 py-8 text-semibold';
+	} else {
+		sizeClass = 'px-24 py-12 text-semibold';
+	}
 
-		const buttonVariants = cva(
+	const buttonVariants = cva(
 		'craft-btn disabled:bg-disabled hover:disabled:bg-disabled disabled:text-disabled ring-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-700 rounded-full flex items-center gap-8 text-ellipsis overflow-hidden focus:border-transparent focus:shadow-none',
 		{
 			variants: {
@@ -113,10 +111,9 @@ type $$Props = ButtonAttrs | AnchorProps;
 		sizeClass,
 		href && 'cursor-pointer',
 		!stretch && 'w-max',
-		stretch  && 'w-full',
-		(stretch && 'justify-between'),
-		!stretch &&
-			'justify-center',
+		stretch && 'w-full',
+		stretch && 'justify-between',
+		!stretch && 'justify-center',
 		primary && 'text-white font-semibold'
 	)}
 	on:click
