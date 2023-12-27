@@ -1,11 +1,27 @@
+<script lang="ts" context="module">
+	import { cva } from 'class-variance-authority';
+
+	const radioVariants = cva('craft-radio', {
+		variants: {
+			size: {
+				sm: 'text-sm size-12',
+				default: 'text-base size-16'
+			}
+		},
+		defaultVariants: {
+			size: 'default'
+		}
+	});
+</script>
+
 <script lang="ts">
 	import { cn } from '$lib/utils/cn.js';
-	import { cva } from 'class-variance-authority';
 	import { Flex, Text } from '@getprovi/craft';
+	import type { HTMLInputAttributes } from 'svelte/elements';
 	import LabelFrame from '$lib/utils/LabelFrame.svelte';
 
-	interface $$Props {
-		class?: string;
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	interface $$Props extends HTMLInputAttributes {
 		testId?: string | undefined;
 		id: string;
 		checked?: boolean;
@@ -21,23 +37,29 @@
 		warning?: boolean;
 	}
 
-	let className: string | undefined | null = undefined;
-	export { className as class };
 	export let testId: string | undefined = undefined;
 	export let id: string;
-	export let value: unknown;
-	export let group: unknown | undefined = undefined;
 	export let checked: boolean = false;
 	export let disabled: boolean = false;
-	export let name: string | undefined = undefined;
+	export let group: unknown | undefined = undefined;
 	export let required: boolean = false;
 	export let size: 'sm' | 'default' = 'default';
+	export let value: unknown = undefined;
 	export let label: string = 'Label';
 	export let hidden: boolean = false;
+
+	// TODO: uncomment unused props
+	// export let critical: boolean = false;
+	// export let success: boolean = false;
+	// export let warning: boolean = false;
+
+	let className: string | undefined | null = undefined;
+	export { className as class };
 
 	$: checked = group !== undefined ? group === value : checked;
 
 	$: radioClass = cn(
+		radioVariants({ size }),
 		'appearance-none m-0 relative border-brand-1 rounded-full relative top-4',
 		'ring-offset-2 ring-2 ring-[transparent] focus:ring-none focus:outline-none focus-visible:outline-none focus-visible:ring-brand-700 transition-colors',
 		checked &&
@@ -51,18 +73,6 @@
 		size === 'sm' && 'text-sm size-12 after:size-6 after:top-[2px] after:left-[2px]',
 		className
 	);
-
-	const radioVariants = cva('craft-radio', {
-		variants: {
-			size: {
-				sm: 'text-sm size-12',
-				default: 'text-base size-16'
-			}
-		},
-		defaultVariants: {
-			size: 'default'
-		}
-	});
 </script>
 
 <LabelFrame
@@ -85,7 +95,6 @@
 		{value}
 		{checked}
 		{disabled}
-		{name}
 		{required}
 		on:blur
 		on:change
@@ -100,12 +109,7 @@
 		on:paste
 		on:change
 		{...$$restProps}
-		class={cn(
-			radioVariants({
-				size
-			}),
-			radioClass
-		)}
+		class={radioClass}
 	/>
 	<Flex
 		as="span"
