@@ -1,68 +1,64 @@
 <script context="module" lang="ts">
-	import type { Action } from 'svelte/action';
-	import type { Readable } from 'svelte/store';
-	import type { TransitionConfig } from 'svelte/transition';
+	import type { Builder, TransitionFunc } from '$lib/utils/helpers';
 	import type { HTMLAnchorAttributes, HTMLAttributes, HTMLButtonAttributes } from 'svelte/elements';
-	export type Builder = Readable<Record<string, unknown>> & Action<HTMLElement>;
-	export type TransitionFunc = (node: HTMLElement, params: any) => TransitionConfig;
 
-	export interface FrameProps {
-		builder?: Builder | undefined;
-		testId?: string | undefined;
-		transition?: TransitionFunc | undefined;
-		params?: object | undefined;
+	interface CommonProps<Params> {
+		builder?: Builder;
+		testId?: string;
+		transition?: TransitionFunc<Params>;
+		params?: Params;
 	}
-	export interface AnchorProps extends HTMLAnchorAttributes, FrameProps {
-		as?: 'a';
-		class?: string;
-	}
-	export interface ButtonProps extends HTMLButtonAttributes, FrameProps {
-		as?: 'button';
-		class?: string;
-	}
-	export interface DivProps extends HTMLAttributes<HTMLElement>, FrameProps {
+
+	interface DivProps<Params> extends CommonProps<Params>, HTMLAttributes<HTMLDivElement> {
 		as?: 'div';
-		class?: string;
 	}
 
-	export interface ElementProps extends HTMLAttributes<HTMLElement>, FrameProps {
-		as?: keyof HTMLElementTagNameMap;
-		class?: string;
-		href?: string | undefined;
-		type?: 'button' | 'submit' | 'reset';
-		disabled?: boolean;
+	interface ButtonProps<Params> extends CommonProps<Params>, HTMLButtonAttributes {
+		as: 'button';
 	}
 
-	export type CombinedProps = AnchorProps | ButtonProps | DivProps | ElementProps;
+	interface AnchorProps<Params> extends CommonProps<Params>, HTMLAnchorAttributes {
+		as: 'a';
+	}
+
+	interface AnyElementProps<Params> extends CommonProps<Params>, HTMLAttributes<HTMLElement> {
+		as: keyof HTMLElementTagNameMap;
+	}
+
+	export type FrameProps<Params = unknown> =
+		| DivProps<Params>
+		| ButtonProps<Params>
+		| AnchorProps<Params>
+		| AnyElementProps<Params>;
 </script>
 
 <script lang="ts">
 	import { cn } from '$lib/utils/cn';
+	import { noopBuilder, noopTransition } from '$lib/utils/helpers';
 
-	type $$Props = CombinedProps;
+	type Params = $$Generic;
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	type $$Props = FrameProps<Params>;
+
+	export let as: keyof HTMLElementTagNameMap = 'div';
+	export let builder: Builder = noopBuilder;
+	export let testId: string | undefined = undefined;
+	export let transition: TransitionFunc<Params> = noopTransition;
+	export let params: Params | undefined = undefined;
 	let className: string | null | undefined = undefined;
 	export { className as class };
-	export let as: CombinedProps['as'] = 'div';
-	export let builder: FrameProps['builder'] = undefined;
-	export let testId: FrameProps['testId'] = undefined;
-	export let transition: TransitionFunc = () => ({ duration: 0 });
-	export let params: object | undefined = undefined;
-
-	$: attributes = builder ? $builder : {};
-
-	function action(node: HTMLElement) {
-		if (builder) return builder(node);
-	}
 </script>
 
+<!-- TODO: I don't think you need a role for buttons or anchors. -->
 <svelte:element
 	this={as}
 	role={as === 'a' ? 'link' : as === 'button' ? 'button' : undefined}
-	transition:transition={params}
-	{...$$restProps}
-	class={cn(className)}
 	data-testid={testId}
+	transition:transition={params}
+	class={cn(className)}
+	use:builder.action
+	{...builder}
 	on:click
 	on:change
 	on:keydown
@@ -72,8 +68,7 @@
 	on:touchcancel
 	on:mouseenter
 	on:mouseleave
-	use:action
-	{...attributes}
+	{...$$restProps}
 >
 	<slot />
 </svelte:element>

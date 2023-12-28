@@ -1,93 +1,7 @@
 <script context="module" lang="ts">
-	import type { HTMLAnchorAttributes, HTMLAttributes } from 'svelte/elements';
-
-	type Shadows = 'none' | 'sm' | 'base' | 'md' | 'lg' | 'xl';
-	type ContainerSm = Omit<Shadows, 'md' | 'lg' | 'xl'> | undefined;
-	type ContainerBase = Omit<Shadows, 'sm' | 'lg' | 'xl'> | undefined;
-	type ContainerLg = Omit<Shadows, 'sm' | 'md' | 'base'> | undefined;
-
-	interface CommonProps extends FrameProps {
-		testId?: string | undefined;
-		sm?: boolean;
-		lg?: boolean;
-		shadow?: ContainerSm | ContainerBase | ContainerLg;
-		wrapper?: boolean;
-		rounded?: boolean;
-		dropdown?: boolean;
-	}
-
-	interface Anchor extends AnchorProps, CommonProps {
-		as: 'a';
-	}
-	interface Div extends DivProps, CommonProps {
-		as?: 'div';
-	}
-
-	interface AsideProps extends ElementProps {
-		as: 'aside';
-		href?: never;
-	}
-
-	interface ArticleProps extends ElementProps {
-		as: 'article';
-		href?: never;
-	}
-
-	interface SectionProps extends ElementProps {
-		as: 'section';
-		href?: never;
-	}
-
-	export type ContainerProps = Anchor | Div | AsideProps | ArticleProps | SectionProps;
-</script>
-
-<script lang="ts">
-	import Frame, {
-		type AnchorProps,
-		type FrameProps,
-		type DivProps,
-		type ElementProps
-	} from './Frame.svelte';
-
-	import { cn } from '$lib/utils/cn.js';
 	import { cva } from 'class-variance-authority';
-
-	type $$Props = ContainerProps;
-
-	let className: ContainerProps['class'] = undefined;
-	export { className as class };
-	export let testId: FrameProps['testId'] = undefined;
-	export let href: AnchorProps['href'] = undefined;
-	export let as: 'div' | 'section' | 'aside' | 'a' | 'article' = 'div';
-	export let sm: boolean = false;
-	export let lg: boolean = false;
-	export let wrapper: boolean = false;
-	export let shadow: ContainerSm | ContainerBase | ContainerLg = undefined;
-	export let rounded: boolean = true;
-	export let dropdown: CommonProps['dropdown'] = false;
-	export let builder: CommonProps['builder'] = undefined;
-
-	$: if (!rounded) {
-		lg = true;
-		shadow = 'xl';
-	} else {
-		rounded = true;
-	}
-
-	let variant: 'sm' | 'lg' | 'default' = 'default';
-
-	$: if (sm) {
-		variant = 'sm';
-	} else if (lg) {
-		variant = 'lg';
-	} else {
-		variant = 'default';
-	}
-
-	let isLink: boolean = false;
-	$: if (href) {
-		isLink = true;
-	}
+	import type { HTMLAnchorAttributes, HTMLAttributes } from 'svelte/elements';
+	import type { Builder, TransitionFunc } from '$lib/utils/helpers';
 
 	const containerVariants = cva('craft border border-solid w-max', {
 		variants: {
@@ -107,96 +21,150 @@
 			variant: 'default'
 		}
 	});
+
+	type ForwardedProps<Params> = {
+		testId?: string;
+		builder?: Builder;
+		transition?: TransitionFunc<Params>;
+		params?: Params;
+	};
+
+	type Shadow = 'none' | 'sm' | 'base' | 'md' | 'lg' | 'xl';
+
+	interface CommonProps<Params> extends ForwardedProps<Params> {
+		sm?: boolean;
+		lg?: boolean;
+		shadow?: Shadow;
+		wrapper?: boolean;
+		rounded?: boolean;
+		dropdown?: boolean;
+	}
+
+	interface DivProps<Params> extends CommonProps<Params>, HTMLAttributes<HTMLDivElement> {
+		as?: 'div';
+	}
+
+	interface AnchorProps<Params> extends CommonProps<Params>, HTMLAnchorAttributes {
+		as: 'a';
+	}
+
+	interface AsideProps<Params> extends CommonProps<Params>, HTMLAttributes<HTMLElement> {
+		as: 'aside';
+	}
+
+	interface ArticleProps<Params> extends CommonProps<Params>, HTMLAttributes<HTMLElement> {
+		as: 'article';
+	}
+
+	interface SectionProps<Params> extends CommonProps<Params>, HTMLAttributes<HTMLElement> {
+		as: 'section';
+	}
+
+	export type ContainerProps<Params = unknown> =
+		| DivProps<Params>
+		| AnchorProps<Params>
+		| AsideProps<Params>
+		| ArticleProps<Params>
+		| SectionProps<Params>;
 </script>
 
-{#if href}
-	<Frame
-		as="a"
-		{builder}
-		{href}
-		{...$$restProps}
-		data-testid={testId}
-		class={cn(containerVariants({ isLink, class: className }))}
-		on:click
-	>
+<script lang="ts">
+	import { cn } from '$lib/utils/cn.js';
+	import Frame from './Frame.svelte';
+
+	type Params = $$Generic;
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	type $$Props = ContainerProps<Params>;
+
+	export let as: 'div' | 'a' | 'aside' | 'article' | 'section' = 'div';
+	export let sm: boolean = false;
+	export let lg: boolean = false;
+	export let shadow: Shadow | undefined = undefined;
+	export let wrapper: boolean = false;
+	export let rounded: boolean = true;
+	export let dropdown: boolean = false;
+	let className: string | null | undefined = undefined;
+	export { className as class };
+
+	$: if (!rounded) {
+		lg = true;
+		shadow = 'xl';
+	} else {
+		rounded = true;
+	}
+
+	let variant: 'sm' | 'lg' | 'default';
+	$: if (sm) {
+		variant = 'sm';
+	} else if (lg) {
+		variant = 'lg';
+	} else {
+		variant = 'default';
+	}
+</script>
+
+{#if as === 'a'}
+	<Frame {as} class={cn(containerVariants({ isLink: true, className }))} on:click {...$$restProps}>
 		<slot />
 	</Frame>
 {:else if wrapper}
-	<Frame
-		{builder}
-		{as}
-		{...$$restProps}
-		data-testid={testId}
-		class={cn(containerVariants({ wrapper, class: className }))}
-	>
+	<Frame {as} class={cn(containerVariants({ wrapper, className }))} {...$$restProps}>
 		<slot />
 	</Frame>
 {:else if dropdown}
 	<Frame
-		{builder}
 		{as}
-		{...$$restProps}
-		data-testid={testId}
 		class={cn(className, 'bg-white p-0 min-w-[224px] w-max rounded shadow-md')}
+		{...$$restProps}
 	>
 		<slot />
 	</Frame>
 {:else if sm}
 	<Frame
-		{builder}
 		{as}
-		{...$$restProps}
-		data-testid={testId}
 		class={cn(
 			containerVariants({ variant, class: className }),
 			shadow === 'sm' && 'shadow-sm',
 			shadow === 'none' && 'shadow-none'
 		)}
+		{...$$restProps}
 	>
 		<slot />
 	</Frame>
 {:else if lg}
 	{#if rounded}
 		<Frame
-			{builder}
 			{as}
-			{...$$restProps}
-			data-testid={testId}
 			class={cn(
-				containerVariants({ variant, class: className }),
+				containerVariants({ variant, className }),
 				'rounded-xl',
 				shadow === 'none' || (!shadow && 'shadow-none'),
 				shadow === 'xl' && 'shadow-xl'
 			)}
+			{...$$restProps}
 		>
 			<slot />
 		</Frame>
 	{:else}
 		<Frame
-			{builder}
 			{as}
+			class={cn(containerVariants({ variant, className }), 'shadow-xl rounded-t-none rounded-b-xl')}
 			{...$$restProps}
-			data-testid={testId}
-			class={cn(
-				containerVariants({ variant, class: className }),
-				'shadow-xl rounded-t-none rounded-b-xl'
-			)}
 		>
 			<slot />
 		</Frame>
 	{/if}
 {:else}
 	<Frame
-		{builder}
 		{as}
-		{...$$restProps}
-		data-testid={testId}
 		class={cn(
-			containerVariants({ variant, class: className }),
+			containerVariants({ variant, className }),
 			shadow === 'none' && 'shadow-none',
 			shadow === 'base' && 'shadow',
 			shadow === 'md' && 'shadow-md'
 		)}
+		{...$$restProps}
 	>
 		<slot />
 	</Frame>
