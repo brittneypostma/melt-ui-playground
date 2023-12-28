@@ -1,5 +1,8 @@
 <script context="module" lang="ts">
 	import type { DropdownMenu } from '@melt-ui/svelte';
+	import { getContext, setContext, type SvelteComponent } from 'svelte';
+	import type { ButtonProps, DivProps } from '$internal';
+
 	const CTX_KEY = Symbol('dropdownMenu');
 
 	export const dropdownCtx = {
@@ -7,14 +10,16 @@
 			return getContext<DropdownMenu>(CTX_KEY);
 		},
 		set(ctx: DropdownMenu) {
-			setContext(CTX_KEY, ctx);
+			return setContext(CTX_KEY, ctx);
 		}
 	};
 
 	export interface DropdownProps {
 		asChild?: boolean;
+		// TODO: consider maybe using a generic or `object` instead of `any`
 		items?: any[];
 	}
+
 	interface TriggerProps extends ButtonProps, DropdownProps {
 		triggerClass?: string | undefined;
 		secondary?: boolean;
@@ -32,18 +37,17 @@
 		disabled?: boolean;
 		href?: never;
 	}
+
 	interface MenuProps extends DivProps, DropdownProps {
 		containerClass?: string | undefined;
 	}
 </script>
 
 <script lang="ts">
-	import { cn } from '$lib/utils/cn.js';
 	import { createDropdownMenu, melt } from '@melt-ui/svelte';
+	import { cn } from '$lib/utils/cn.js';
 	import Button from './Button.svelte';
 	import Container from './Container.svelte';
-	import type { ButtonProps, DivProps } from '$internal';
-	import { getContext, setContext, type SvelteComponent } from 'svelte';
 
 	type $$Props = TriggerProps | MenuProps;
 
@@ -77,7 +81,8 @@
 		iconBefore,
 		iconAfter
 	};
-	const ctx = createDropdownMenu({
+
+	const dropdownMenu = createDropdownMenu({
 		positioning: {
 			placement: 'bottom-start',
 			offset: {
@@ -86,17 +91,15 @@
 		}
 	});
 
-	dropdownCtx.set(ctx);
-
 	const {
 		elements: { trigger, menu, item }
-	} = dropdownCtx.get();
+	} = dropdownCtx.set(dropdownMenu);
 </script>
 
 <div {...$$restProps} data-testid={testId} class="w-max relative z-drawer">
-	<svelte:component this={Button} builder={trigger} class={cn(triggerClass)} {...btnProps} />
+	<Button builder={trigger} class={cn(triggerClass)} {...btnProps} />
 
-	<Container builder={menu} dropdown class={cn(containerClass, 'relative z-drawer mt-12 w-max')}>
+	<Container builder={$menu} dropdown class={cn(containerClass, 'relative z-drawer mt-12 w-max')}>
 		{#if $$slots.header}
 			<header class="p-16 border-b border-neutral border-solid"><slot name="header" /></header>
 		{/if}
