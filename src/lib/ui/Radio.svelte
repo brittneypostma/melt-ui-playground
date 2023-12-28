@@ -12,16 +12,8 @@
 			size: 'default'
 		}
 	});
-</script>
 
-<script lang="ts">
-	import { cn } from '$lib/utils/cn.js';
-	import { Flex, Text } from '@getprovi/craft';
-	import type { HTMLInputAttributes } from 'svelte/elements';
-	import LabelFrame from '$lib/utils/LabelFrame.svelte';
-
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	interface $$Props extends Omit<HTMLInputAttributes, 'size'> {
+	export interface RadioProps extends Omit<HTMLInputAttributes, 'size'> {
 		testId?: string | undefined;
 		id: string;
 		value: unknown;
@@ -36,6 +28,16 @@
 		success?: boolean;
 		warning?: boolean;
 	}
+</script>
+
+<script lang="ts">
+	import { cn } from '$lib/utils/cn.js';
+	import { Flex, Text } from '@getprovi/craft';
+	import type { HTMLInputAttributes } from 'svelte/elements';
+	import LabelFrame from '$lib/utils/LabelFrame.svelte';
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	type $$Props = RadioProps;
 
 	export let testId: string | undefined = undefined;
 	export let id: string;
