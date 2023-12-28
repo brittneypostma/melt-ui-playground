@@ -164,7 +164,7 @@ Radios allow a user to select only a single item from a set of two or more choic
 | `size` | `'sm' | 'default'` | `'default'` | Size of the radio |
 | `label` | `string` | `'Label'` | Label of the radio |
 | `hidden` | `boolean` | `false` | Hidden state of the label of the radio |
-| `class` | `string` | `null` | `undefined` | Class of the radio
+| `class` | `string` | `undefined` | Class of the radio
 -->
 
 <style>
