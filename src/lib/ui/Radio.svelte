@@ -21,15 +21,15 @@
 	import LabelFrame from '$lib/utils/LabelFrame.svelte';
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	interface $$Props extends HTMLInputAttributes {
+	interface $$Props extends Omit<HTMLInputAttributes, 'size'> {
 		testId?: string | undefined;
 		id: string;
+		value: unknown;
+		group?: unknown | undefined;
 		checked?: boolean;
 		disabled?: boolean;
-		group?: unknown | undefined;
 		required?: boolean;
 		size?: 'sm' | 'default';
-		value: unknown;
 		label?: string;
 		hidden?: boolean;
 		critical?: boolean;
@@ -39,16 +39,16 @@
 
 	export let testId: string | undefined = undefined;
 	export let id: string;
+	export let value: unknown = undefined;
+	export let group: unknown | undefined = undefined;
 	export let checked: boolean = false;
 	export let disabled: boolean = false;
-	export let group: unknown | undefined = undefined;
 	export let required: boolean = false;
 	export let size: 'sm' | 'default' = 'default';
-	export let value: unknown = undefined;
 	export let label: string = 'Label';
 	export let hidden: boolean = false;
 
-	// TODO: uncomment unused props
+	// TODO: potentially unused props?
 	// export let critical: boolean = false;
 	// export let success: boolean = false;
 	// export let warning: boolean = false;
@@ -96,6 +96,7 @@
 		{checked}
 		{disabled}
 		{required}
+		class={radioClass}
 		on:blur
 		on:change
 		on:click
@@ -109,7 +110,6 @@
 		on:paste
 		on:change
 		{...$$restProps}
-		class={radioClass}
 	/>
 	<Flex
 		as="span"
@@ -162,7 +162,7 @@ Radios allow a user to select only a single item from a set of two or more choic
 | `size` | `'sm' | 'default'` | `'default'` | Size of the radio |
 | `label` | `string` | `'Label'` | Label of the radio |
 | `hidden` | `boolean` | `false` | Hidden state of the label of the radio |
-| `class` | `string` | `undefined` | Class of the radio
+| `class` | `string` | `null` | `undefined` | Class of the radio
 -->
 
 <style>
